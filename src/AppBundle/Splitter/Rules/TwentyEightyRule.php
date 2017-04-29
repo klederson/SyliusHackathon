@@ -23,7 +23,7 @@ class TwentyEightyRule implements SplitRuleInterface
      */
     public function match(OrderInterface $order): bool
     {
-        if ($order->getItemUnits()->count() > 2) {
+        if ($order->getItemUnits()->count() > 4) {
             return true;
         }
         return false;
