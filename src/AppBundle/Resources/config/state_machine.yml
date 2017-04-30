@@ -1,0 +1,9 @@
+winzou_state_machine:
+    sylius_shipment:
+        states:
+            splitted: ~
+            awaiting: ~
+        transitions:
+            split:
+                from: [cart]
+                to: splitted
