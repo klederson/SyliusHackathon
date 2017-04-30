@@ -13,5 +13,5 @@ interface SplitRuleInterface
 
     public function setupShipment(ShipmentInterface $newShipment, OrderInterface $order) : ShipmentInterface;
 
-    public function moveUnits($orderItems, ShipmentInterface $shipmentZero, ShipmentInterface $newShipment): void;
+    public function moveUnits($orderItems, ShipmentInterface $shipmentZero, ShipmentInterface $newShipment);
 }
