@@ -2,13 +2,17 @@
 
 namespace AppBundle\Splitter;
 
+use Doctrine\Common\Collections\Collection;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItem;
 use Sylius\Component\Core\Model\OrderItemInterface;
+use Sylius\Component\Core\Model\Shipment;
+use Sylius\Component\Core\Model\ShipmentInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
 class SplitManager
 {
+
     /**
      * @var SplitRuleInterface[]
      */
@@ -17,11 +21,11 @@ class SplitManager
     /**
      * @var FactoryInterface
      */
-    private $orderFactory;
+    private $shipmentFactory;
 
     public function __construct(FactoryInterface $factory)
     {
-        $this->orderFactory = $factory;
+        $this->shipmentFactory = $factory;
     }
 
     /**
@@ -35,55 +39,42 @@ class SplitManager
     /**
      * @return SplitRuleInterface[]
      */
-    protected function getRules() : array
+    protected function getRules(): array
     {
         return $this->rules;
     }
 
-    public function check(OrderInterface $order)
+    public function executeRules(OrderInterface $order)
     {
-        /**
-         * @var OrderItemInterface[]
-         */
-        $orderItemsBucket = [];
-
-        foreach($this->getRules() as $rule) {
-            if( $rule->match($order) === true ) {
-                $orderItemsBucket = $rule->apply($order);
-
-                $this->splitOrder($order, $orderItemsBucket);
+        foreach ($this->getRules() as $rule) {
+            if ($rule->match($order) === true) {
+                $this->applyRule($order, $rule);
                 break;
             }
         }
     }
 
-    private function splitOrder(OrderInterface $originalOrder, array $orderItemsBuckets) {
-        $orderCollection = [];
+    public function applyRule(OrderInterface $order, SplitRuleInterface $rule)
+    {
+        $orderItemsBuckets = $rule->getBuckets($order);
+        $shipments = $order->getShipments();
+        $shipmentZero = $order->getShipments()->get(0);
 
-        foreach($orderItemsBuckets as $index => $orderItems) {
-            if($index > 0) {
+        foreach ($orderItemsBuckets as $index => $orderItems) {
+            if ($index > 0) {
                 /**
-                 * @var OrderInterface $newOrder
+                 * @var ShipmentInterface $newShipment
                  */
-                $newOrder = $this->orderFactory->createNew();
+                $newShipment = $this->shipmentFactory->createNew();
 
-                $newOrder->setCustomer($originalOrder->getCustomer());
-                $newOrder->setBillingAddress($originalOrder->getBillingAddress());
-                $newOrder->setShippingAddress($originalOrder->getShippingAddress());
-                $newOrder->setChannel($originalOrder->getChannel());
-                $newOrder->setShippingState($originalOrder->getShippingState());
-
-                foreach ($orderItems as $item) {
-                    $originalOrder->removeItem($item);
-                    $newOrder->addItem($item);
-                }
-
-                $orderCollection[] = $newOrder;
+                $rule->setupShipment($newShipment, $order);
+                $rule->moveUnits($orderItems, $shipmentZero, $newShipment);
+                $shipments->add($newShipment);
             }
         }
-
-        $orderCollection[] = $originalOrder;
-
-        return $orderCollection;
     }
+
+
+
+
 }
