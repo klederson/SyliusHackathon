@@ -1,5 +1,5 @@
 /.php_cs.cache
-
+.idea/*
 /app/config/parameters.yml
 /app/config/*.local.yml
 /var/*

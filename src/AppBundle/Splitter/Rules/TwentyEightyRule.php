@@ -14,7 +14,7 @@ use Sylius\Component\Core\Model\OrderItemInterface;
  * Class TwentyEightyRule
  * @package AppBundle\Splitter\Rules
  */
-class TwentyEightyRule implements SplitRuleInterface
+class TwentyEightyRule extends AbstractShipmentSplitterRule implements SplitRuleInterface
 {
 
     /**
@@ -29,11 +29,12 @@ class TwentyEightyRule implements SplitRuleInterface
         return false;
     }
 
+
     /**
      * @param OrderInterface $order
      * @return array
      */
-    public function apply(OrderInterface $order): array
+    public function getBuckets(OrderInterface $order) : array
     {
         $orderItems = $order->getItems();
 
