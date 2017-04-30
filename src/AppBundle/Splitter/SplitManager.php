@@ -2,11 +2,7 @@
 
 namespace AppBundle\Splitter;
 
-use Doctrine\Common\Collections\Collection;
 use Sylius\Component\Core\Model\OrderInterface;
-use Sylius\Component\Core\Model\OrderItem;
-use Sylius\Component\Core\Model\OrderItemInterface;
-use Sylius\Component\Core\Model\Shipment;
 use Sylius\Component\Core\Model\ShipmentInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
@@ -66,6 +62,8 @@ class SplitManager
                  * @var ShipmentInterface $newShipment
                  */
                 $newShipment = $this->shipmentFactory->createNew();
+
+                $newShipment->setOrder($order);
 
                 $rule->setupShipment($newShipment, $order);
                 $rule->moveUnits($orderItems, $shipmentZero, $newShipment);

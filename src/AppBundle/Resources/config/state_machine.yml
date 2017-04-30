@@ -7,3 +7,10 @@ winzou_state_machine:
             split:
                 from: [cart]
                 to: splitted
+    sylius_order_shipping:
+        callbacks:
+            after:
+                app_split_shipment:
+                    on: [request_shipping]
+                    do: ["@app.splitter.manager", "executeRules"]
+                    args: ["object"]

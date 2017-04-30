@@ -39,7 +39,7 @@ abstract class AbstractShipmentSplitterRule
      * @param ShipmentInterface $shipmentZero
      * @param ShipmentInterface $newShipment
      */
-    public function moveUnits(array $orderItems, ShipmentInterface $shipmentZero, ShipmentInterface $newShipment): void
+    public function moveUnits($orderItems, ShipmentInterface $shipmentZero, ShipmentInterface $newShipment): void
     {
         foreach ($orderItems as $item) {
             /** @var Shipment $shipmentZero */
