@@ -42,7 +42,7 @@ class TwentyEightyRule extends AbstractShipmentSplitterRule implements SplitRule
 
         foreach ($orderItems as $index => $orderItem) {
             $bucketIndex = $index % 4 === 0 ? 0 : 1;
-            $buckets[$bucketIndex] = $orderItem;
+            $buckets[$bucketIndex][] = $orderItem;
         }
 
         return $buckets;

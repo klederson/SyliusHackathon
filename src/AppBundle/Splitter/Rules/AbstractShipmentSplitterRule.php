@@ -35,14 +35,17 @@ abstract class AbstractShipmentSplitterRule
 
 
     /**
-     * @param OrderInterface[] $orderItems
+     * @param OrderItemInterface[] $orderItems
      * @param ShipmentInterface $shipmentZero
      * @param ShipmentInterface $newShipment
      */
     public function moveUnits($orderItems, ShipmentInterface $shipmentZero, ShipmentInterface $newShipment)
     {
+
+        /** @var OrderItemInterface $item */
         foreach ($orderItems as $item) {
-            foreach ($item->getItemUnits() as $unit) {
+
+            foreach ($item->getUnits() as $unit) {
                 /** @var Shipment $shipmentZero */
                 $shipmentZero->removeUnit($unit);
                 $newShipment->addUnit($unit);
